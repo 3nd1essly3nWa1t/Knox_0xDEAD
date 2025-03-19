@@ -1,0 +1,23 @@
+# Inject into init.rc 
+echo "write /sys/kernel/debug/kgsl/kgsl-3d0/max_gpuclk 800000000" >> ramdisk/init.rc 
+echo "write /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor performance" >> ramdisk/init.rc 
+
+# Disable Samsung's RAM-hog services 
+echo "stop samsung.security" >> ramdisk/init.rc 
+echo "stop securitylogagent" >> ramdisk/init.rc 
+
+# VM/Kernel optimizations 
+cp scripts/perf_tweaks/99perf.rc /mnt/super/system/etc/init/ 
+cp scripts/perf_tweaks/sysctl.conf /mnt/super/system/etc/ 
+on boot 
+    # Disable kernel debugging 
+    write /sys/module/printk/parameters/ignore_loglevel Y 
+    write /sys/kernel/debug/sched_features NO_HR_TICK 
+
+    # Boost I/O 
+    write /sys/block/sda/queue/scheduler noop 
+    write /sys/block/mmcblk0/queue/read_ahead_kb 2048 
+     adb shell "cat /sys/class/thermal/thermal_zone*/temp" 
+
+    # Disable SELinux 
+    setenforce 0 

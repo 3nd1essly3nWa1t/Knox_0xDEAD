@@ -1,0 +1,8 @@
+# Patch boot.img with Magisk 
+wget https://github.com/topjohnwu/Magisk/releases/latest/download/magisk.apk 
+unzip magisk.apk -d magisk 
+./magisk boot ../firmware/modified/boot.img 
+
+# Force bootloader unlock (Samsung-specific) 
+echo -n "KNOX=0xDEAD" >> /mnt/super/efs/FactoryApp/.bootloader_unlock 
+sed -i 's/lock=1/lock=0/g' /mnt/super/vendor/etc/init/init_samsung.rc 

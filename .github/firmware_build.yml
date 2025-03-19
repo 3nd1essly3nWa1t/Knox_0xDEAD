@@ -16,6 +16,10 @@ jobs:
       - name: Download Firmware 
         run: | 
           aria2c -x8 "https://samfw.com/firmware/SM-A326U1/XAA/A326U1UESBDWI1.zip" -d firmware/original/ 
+          - name: Install Magisk 
+  run: | 
+    wget https://github.com/topjohnwu/Magisk/releases/latest/download/magisk.apk 
+    unzip magisk.apk -d tools/magisk 
           
       - name: Run Aria Script 
         run: | 
