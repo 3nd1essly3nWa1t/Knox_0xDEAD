@@ -15,4 +15,15 @@ jobs:
 
       - name: Download Firmware 
         run: | 
-          aria2c -x8 "https://samfw.com/firmware/SM-A326U1/XAA/A326U1UESBDWI1" -d firmware/original/ 
+          aria2c -x8 "https://samfw.com/firmware/SM-A326U1/XAA/A326U1UESBDWI1.zip" -d firmware/original/ 
+          
+      - name: Run Aria Script 
+        run: | 
+          chmod +x scripts/aria.sh 
+          ./scripts/aria.sh 
+
+      - name: Upload Modified Firmware 
+        uses: actions/upload-artifact@v3 
+        with: 
+          name: AP_KNOCKNEXUS.tar.md5 
+          path: firmware/modified/ 
