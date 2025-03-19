@@ -13,19 +13,30 @@ jobs:
           sudo apt-get update 
           sudo apt-get install -y lz4 android-sdk-libsparse-utils 
 
+      - name: Cache Tools
+        uses: actions/cache@v3
+        with:
+          path: /usr/local/bin
+          key: ${{ runner.os }}-tools-${{ hashFiles('**/setup-tools.sh') }}
+          restore-keys: |
+            ${{ runner.os }}-tools-
+        
       - name: Download Firmware 
         run: | 
           aria2c -x8 "https://samfw.com/firmware/SM-A326U1/XAA/A326U1UESBDWI1.zip" -d firmware/original/ 
+        continue-on-error: true
 
       - name: Install Magisk
         run: | 
           wget https://github.com/topjohnwu/Magisk/releases/latest/download/magisk.apk 
           unzip magisk.apk -d tools/magisk 
+        continue-on-error: true
           
       - name: Run Aria Script 
         run: | 
           chmod +x scripts/aria.sh 
           ./scripts/aria.sh 
+        continue-on-error: true
 
       - name: Upload Modified Firmware 
         uses: actions/upload-artifact@v3 
