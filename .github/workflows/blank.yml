@@ -1,0 +1,33 @@
+name: Build Modified Firmware 
+on: [workflow_dispatch] 
+
+jobs: 
+  build: 
+    runs-on: ubuntu-latest 
+    steps: 
+      - name: Checkout Repo 
+        uses: actions/checkout@v4 
+
+      - name: Setup Tools 
+        run: | 
+          sudo apt-get update 
+          sudo apt-get install -y lz4 android-sdk-libsparse-utils 
+
+      - name: Download Firmware 
+        run: | 
+          aria2c -x8 "https://samfw.com/firmware/SM-A326U1/XAA/A326U1UESBDWI1.zip" -d firmware/original/ 
+          - name: Install Magisk 
+  run: | 
+    wget https://github.com/topjohnwu/Magisk/releases/latest/download/magisk.apk 
+    unzip magisk.apk -d tools/magisk 
+          
+      - name: Run Aria Script 
+        run: | 
+          chmod +x scripts/aria.sh 
+          ./scripts/aria.sh 
+
+      - name: Upload Modified Firmware 
+        uses: actions/upload-artifact@v3 
+        with: 
+          name: AP_KNOCKNEXUS.tar.md5 
+          path: firmware/modified/ 
